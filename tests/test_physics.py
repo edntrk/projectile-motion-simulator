@@ -1,8 +1,11 @@
 import numpy as np
 import pytest
 
-from physics import calculate_metrics, calculate_trajectory
-
+from physics import (
+    calculate_metrics,
+    calculate_state_at_time,
+    calculate_trajectory,
+)
 
 def test_projectile_starts_and_finishes_at_ground_level():
     trajectory = calculate_trajectory(
@@ -95,4 +98,38 @@ def test_invalid_inputs_raise_error(
             initial_velocity=velocity,
             angle_degrees=angle,
             gravity=gravity,
+        )
+def test_state_at_maximum_height():
+    metrics = calculate_metrics(
+        initial_velocity=20,
+        angle_degrees=45,
+        gravity=9.81,
+    )
+
+    peak_time = metrics["flight_time"] / 2
+
+    state = calculate_state_at_time(
+        initial_velocity=20,
+        angle_degrees=45,
+        selected_time=peak_time,
+        gravity=9.81,
+    )
+
+    assert state["vertical_velocity"] == pytest.approx(
+        0,
+        abs=1e-10,
+    )
+
+    assert state["vertical_position"] == pytest.approx(
+        metrics["maximum_height"],
+    )
+
+
+def test_time_outside_flight_raises_error():
+    with pytest.raises(ValueError):
+        calculate_state_at_time(
+            initial_velocity=20,
+            angle_degrees=45,
+            selected_time=5,
+            gravity=9.81,
         )

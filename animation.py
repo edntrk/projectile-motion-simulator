@@ -17,7 +17,7 @@ def create_projectile_animation(trajectory: dict):
     y_velocity = trajectory["y_velocity"]
     y_acceleration = trajectory["y_acceleration"]
 
-    figure = plt.figure(figsize=(10, 5))
+    figure = plt.figure(figsize=(8, 4), dpi=70)
 
     grid = GridSpec(
         2,
@@ -103,7 +103,7 @@ def create_projectile_animation(trajectory: dict):
     acceleration_axis.set_ylabel("Acceleration (m/s²)")
     acceleration_axis.grid(True, alpha=0.3)
 
-    frame_count = min(40, len(time))
+    frame_count = min(25, len(time))
 
     frame_indices = np.linspace(
         1,

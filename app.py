@@ -7,6 +7,7 @@ from animation import create_projectile_animation
 from physics import (
     GRAVITY_VALUES,
     calculate_metrics,
+    calculate_state_at_time,
     calculate_trajectory,
 )
 
@@ -80,13 +81,67 @@ metric_column_3.metric(
     f"{metrics['horizontal_range']:.2f} m",
 )
 
+st.subheader("Inspect a Specific Time")
+
+selected_time = st.number_input(
+    "Enter a time during the flight (seconds)",
+    min_value=0.0,
+    max_value=float(metrics["flight_time"]),
+    value=0.0,
+    step=0.1,
+    format="%.2f",
+)
+
+selected_state = calculate_state_at_time(
+    initial_velocity=initial_velocity,
+    angle_degrees=angle_degrees,
+    selected_time=selected_time,
+    gravity=gravity,
+)
+
+selected_state_table = pd.DataFrame(
+    [
+        {
+            "Time (s)": selected_state["time"],
+            "Horizontal Position (m)": selected_state[
+                "horizontal_position"
+            ],
+            "Height (m)": selected_state[
+                "vertical_position"
+            ],
+            "Horizontal Velocity (m/s)": selected_state[
+                "horizontal_velocity"
+            ],
+            "Vertical Velocity (m/s)": selected_state[
+                "vertical_velocity"
+            ],
+            "Total Speed (m/s)": selected_state[
+                "total_velocity"
+            ],
+            "Acceleration (m/s²)": selected_state[
+                "vertical_acceleration"
+            ],
+        }
+    ]
+)
+
+st.dataframe(
+    selected_state_table.style.format("{:.2f}"),
+    hide_index=True,
+    use_container_width=True,
+)
+
 st.subheader(f"Animated Trajectory on {planet}")
 
 animation_figure, projectile_animation = (
     create_projectile_animation(trajectory)
 )
 
-animation_html = projectile_animation.to_jshtml()
+animation_html = projectile_animation.to_jshtml(
+    fps = 12,
+    default_mode="once",
+)
+    
 
 components.html(
     animation_html,
