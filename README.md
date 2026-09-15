@@ -8,6 +8,12 @@ This project was originally developed in 2024 as a high-school physics visualisa
 
 ![Projectile Motion Simulator](screenshots/projectile-motion-simulator.png)
 
+## Live Demo
+
+Try the deployed application:
+
+[Open the Projectile Motion Simulator](https://projectile-motion-simulator-edntrk.streamlit.app/)
+
 ## Features
 
 - Calculate a projectile's trajectory
@@ -17,6 +23,8 @@ This project was originally developed in 2024 as a high-school physics visualisa
 - Visualise vertical velocity and acceleration
 - View the generated simulation data
 - Export simulation results as a CSV file
+- Inspect position, velocity and acceleration at a selected time
+- Watch an animated trajectory with synchronised velocity and acceleration graphs
 
 ## Technologies
 
