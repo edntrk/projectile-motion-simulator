@@ -1,7 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit as st
+import streamlit.components.v1 as components
 
+from animation import create_projectile_animation
 from physics import (
     GRAVITY_VALUES,
     calculate_metrics,
@@ -78,81 +80,21 @@ metric_column_3.metric(
     f"{metrics['horizontal_range']:.2f} m",
 )
 
-st.subheader(f"Trajectory on {planet}")
+st.subheader(f"Animated Trajectory on {planet}")
 
-trajectory_figure, trajectory_axis = plt.subplots(figsize=(10, 5))
-
-trajectory_axis.plot(
-    trajectory["x_position"],
-    trajectory["y_position"],
-    color="#4285F4",
-    linewidth=3,
+animation_figure, projectile_animation = (
+    create_projectile_animation(trajectory)
 )
 
-trajectory_axis.fill_between(
-    trajectory["x_position"],
-    trajectory["y_position"],
-    alpha=0.15,
-    color="#4285F4",
+animation_html = projectile_animation.to_jshtml()
+
+components.html(
+    animation_html,
+    height=600,
+    scrolling=False,
 )
 
-trajectory_axis.set_xlabel("Horizontal Distance (m)")
-trajectory_axis.set_ylabel("Height (m)")
-trajectory_axis.set_title(
-    f"Velocity: {initial_velocity:.0f} m/s | "
-    f"Angle: {angle_degrees:.0f}° | "
-    f"Gravity: {gravity:.2f} m/s²"
-)
-trajectory_axis.grid(alpha=0.3)
-
-st.pyplot(trajectory_figure)
-plt.close(trajectory_figure)
-
-left_column, right_column = st.columns(2)
-
-with left_column:
-    st.subheader("Vertical Velocity")
-
-    velocity_figure, velocity_axis = plt.subplots()
-
-    velocity_axis.plot(
-        trajectory["time"],
-        trajectory["y_velocity"],
-        color="#EA4335",
-    )
-
-    velocity_axis.axhline(
-        y=0,
-        color="black",
-        linestyle="--",
-        alpha=0.5,
-    )
-
-    velocity_axis.set_xlabel("Time (s)")
-    velocity_axis.set_ylabel("Vertical Velocity (m/s)")
-    velocity_axis.grid(alpha=0.3)
-
-    st.pyplot(velocity_figure)
-    plt.close(velocity_figure)
-
-with right_column:
-    st.subheader("Vertical Acceleration")
-
-    acceleration_figure, acceleration_axis = plt.subplots()
-
-    acceleration_axis.plot(
-        trajectory["time"],
-        trajectory["y_acceleration"],
-        color="#34A853",
-    )
-
-    acceleration_axis.set_xlabel("Time (s)")
-    acceleration_axis.set_ylabel("Acceleration (m/s²)")
-    acceleration_axis.grid(alpha=0.3)
-
-    st.pyplot(acceleration_figure)
-    plt.close(acceleration_figure)
-
+plt.close(animation_figure)
 simulation_data = pd.DataFrame(
     {
         "Time (s)": trajectory["time"],
