@@ -103,7 +103,7 @@ def create_projectile_animation(trajectory: dict):
     acceleration_axis.set_ylabel("Acceleration (m/s²)")
     acceleration_axis.grid(True, alpha=0.3)
 
-    frame_count = min(100, len(time))
+    frame_count = min(40, len(time))
 
     frame_indices = np.linspace(
         1,
